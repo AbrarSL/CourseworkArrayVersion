@@ -26,32 +26,32 @@ public class Main {
                     viewAllQueues(cashiers);
                     break;
                 case "VEQ", "101":
-                    viewEmptyQueues();
+                    viewEmptyQueues(cashiers);
                     break;
-                /*case "ACQ", "102":
-                    addCustomerToQueue();
-                    break;
-                case "RCQ", "103":
-                    removeCustomerFromQueue();
-                    break;
-                case "PCQ", "104":
-                    removeServedCustomer();
-                    break;
-                case "VCS", "105":
-                    viewSortedCustomers();
-                    break;
-                case "SPD", "106":
-                    storeProgramData();
-                    break;
-                case "LPD", "107":
-                    loadProgramData();
-                    break;
-                case "STK", "108":
-                    viewBurgerStock();
-                    break;
-                case "AFS", "109":
-                    addToBurgerStock();
-                    break;*/
+//                case "ACQ", "102":
+//                    addCustomerToQueue();
+//                    break;
+//                case "RCQ", "103":
+//                    removeCustomerFromQueue();
+//                    break;
+//                case "PCQ", "104":
+//                    removeServedCustomer();
+//                    break;
+//                case "VCS", "105":
+//                    viewSortedCustomers();
+//                    break;
+//                case "SPD", "106":
+//                    storeProgramData();
+//                    break;
+//                case "LPD", "107":
+//                    loadProgramData();
+//                    break;
+//                case "STK", "108":
+//                    viewBurgerStock();
+//                    break;
+//                case "AFS", "109":
+//                    addToBurgerStock();
+//                    break;
                 default:
                     System.out.println("Unknown Command!");
             }
@@ -79,7 +79,8 @@ public class Main {
         final int paddingLength = ((headerLength / cashiers.length) - 1) / 2;
 
         System.out.println("*".repeat(headerLength));
-        System.out.println("*" + " ");
+        System.out.println("*" + " ".repeat(6) + "Cashier" + " ".repeat(6) + "*");
+        System.out.println("*".repeat(headerLength));
 
         for (int i = 0; i < longestQueueLength; i++) {
             for (String[] queue : cashiers) {
@@ -101,5 +102,19 @@ public class Main {
 
         System.out.println("X - Occupied");
         System.out.println("O - Not Occupied");
+    }
+
+    private static void viewEmptyQueues(String[][] cashiers) {
+        String[][] tempQueues = new String[3][];
+
+        for (int i = 0; i < cashiers.length; i++) {
+            if (isQueueEmpty(cashiers[i])) {
+                tempQueues[i] = cashiers[i];
+            } else {
+                tempQueues[i] = new String[0];
+            }
+        }
+
+        viewAllQueues(tempQueues);
     }
 }
