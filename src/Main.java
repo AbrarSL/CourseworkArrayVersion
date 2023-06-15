@@ -28,30 +28,30 @@ public class Main {
                 case "VEQ", "101":
                     viewEmptyQueues(cashiers);
                     break;
-//                case "ACQ", "102":
-//                    addCustomerToQueue();
-//                    break;
-//                case "RCQ", "103":
-//                    removeCustomerFromQueue();
-//                    break;
-//                case "PCQ", "104":
-//                    removeServedCustomer();
-//                    break;
-//                case "VCS", "105":
-//                    viewSortedCustomers();
-//                    break;
-//                case "SPD", "106":
-//                    storeProgramData();
-//                    break;
-//                case "LPD", "107":
-//                    loadProgramData();
-//                    break;
-//                case "STK", "108":
-//                    viewBurgerStock();
-//                    break;
-//                case "AFS", "109":
-//                    addToBurgerStock();
-//                    break;
+                case "ACQ", "102":
+                    addCustomerToQueue(scan, cashiers);
+                    break;
+                // case "RCQ", "103":
+                // removeCustomerFromQueue();
+                // break;
+                // case "PCQ", "104":
+                // removeServedCustomer();
+                // break;
+                // case "VCS", "105":
+                // viewSortedCustomers();
+                // break;
+                // case "SPD", "106":
+                // storeProgramData();
+                // break;
+                // case "LPD", "107":
+                // loadProgramData();
+                // break;
+                // case "STK", "108":
+                // viewBurgerStock();
+                // break;
+                // case "AFS", "109":
+                // addToBurgerStock();
+                // break;
                 default:
                     System.out.println("Unknown Command!");
             }
@@ -71,6 +71,17 @@ public class Main {
         }
 
         return true;
+    }
+
+    private static boolean addToQueue(String[] queue, String customer) {
+        for (int i = 0; i < queue.length; i++) {
+            if (queue[i] == null) {
+                queue[i] = customer;
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static void viewAllQueues(String[][] cashiers) {
@@ -116,5 +127,33 @@ public class Main {
         }
 
         viewAllQueues(tempQueues);
+    }
+
+    private static void addCustomerToQueue(Scanner scan, String[][] cashiers) {
+        int cashierNumber = 0;
+
+        while (true) {
+            try {
+                cashierNumber = Integer.parseInt(
+                        inputPrompt(scan, "Select cashier (Enter 0, 1 or 2): "));
+
+                if (cashierNumber >= cashiers.length || cashierNumber < 0) {
+                    System.out.println("Number out of range!");
+                    continue;
+                }
+
+                break;
+            } catch (Exception error) {
+                System.out.println("Please enter a valid number! (0, 1 or 2)");
+            }
+        }
+
+        if (addToQueue(cashiers[cashierNumber],
+                inputPrompt(scan, "Enter name of customer: "))) {
+            System.out.println("Successfully added customer to queue!");
+        } else {
+            System.out.println(
+                    "Couldn't add customer to queue! (Selected Queue is full!)");
+        }
     }
 }
