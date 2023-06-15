@@ -11,8 +11,6 @@ public class Main {
 
         int burgerStock = 50;
 
-        cashiers[0][0] = "Saman";
-
         while (true) {
             String command = inputPrompt(scan, "Enter a command: ").strip().toUpperCase();
 
@@ -31,27 +29,27 @@ public class Main {
                 case "ACQ", "102":
                     addCustomerToQueue(scan, cashiers);
                     break;
-                // case "RCQ", "103":
-                // removeCustomerFromQueue();
-                // break;
-                // case "PCQ", "104":
-                // removeServedCustomer();
-                // break;
-                // case "VCS", "105":
-                // viewSortedCustomers();
-                // break;
-                // case "SPD", "106":
-                // storeProgramData();
-                // break;
-                // case "LPD", "107":
-                // loadProgramData();
-                // break;
-                // case "STK", "108":
-                // viewBurgerStock();
-                // break;
-                // case "AFS", "109":
-                // addToBurgerStock();
-                // break;
+//                case "RCQ", "103":
+//                    removeCustomerFromQueue(scan, cashiers);
+//                    break;
+//                case "PCQ", "104":
+//                    removeServedCustomer();
+//                    break;
+//                case "VCS", "105":
+//                    viewSortedCustomers();
+//                    break;
+//                case "SPD", "106":
+//                    storeProgramData();
+//                    break;
+//                case "LPD", "107":
+//                    loadProgramData();
+//                    break;
+//                case "STK", "108":
+//                    viewBurgerStock();
+//                    break;
+//                case "AFS", "109":
+//                    addToBurgerStock();
+//                    break;
                 default:
                     System.out.println("Unknown Command!");
             }
@@ -98,9 +96,11 @@ public class Main {
         final int longestQueueLength = 5;
         final int headerLength = 21;
         final int paddingLength = ((headerLength / cashiers.length) - 1) / 2;
+        final String titleText = "Cashier";
+        final int titlePaddingLength = (headerLength - 2 - titleText.length()) / 2;
 
         System.out.println("*".repeat(headerLength));
-        System.out.println("*" + " ".repeat(6) + "Cashier" + " ".repeat(6) + "*");
+        System.out.println("*" + " ".repeat(titlePaddingLength) + titleText + " ".repeat(titlePaddingLength) + "*");
         System.out.println("*".repeat(headerLength));
 
         for (int i = 0; i < longestQueueLength; i++) {
