@@ -73,6 +73,16 @@ public class Main {
         return true;
     }
 
+    private static boolean isQueueFull(String[] queue) {
+        for (String customer : queue) {
+            if (customer == null) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private static boolean addToQueue(String[] queue, String customer) {
         for (int i = 0; i < queue.length; i++) {
             if (queue[i] == null) {
@@ -119,7 +129,7 @@ public class Main {
         String[][] tempQueues = new String[3][];
 
         for (int i = 0; i < cashiers.length; i++) {
-            if (isQueueEmpty(cashiers[i])) {
+            if (!isQueueFull(cashiers[i])) {
                 tempQueues[i] = cashiers[i];
             } else {
                 tempQueues[i] = new String[0];
