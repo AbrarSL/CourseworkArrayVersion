@@ -29,9 +29,9 @@ public class Main {
                 case "ACQ", "102":
                     addCustomerToQueue(scan, cashiers);
                     break;
-//                case "RCQ", "103":
-//                    removeCustomerFromQueue(scan, cashiers);
-//                    break;
+                case "RCQ", "103":
+                    removeCustomerFromQueue(scan, cashiers);
+                    break;
 //                case "PCQ", "104":
 //                    removeServedCustomer();
 //                    break;
@@ -80,6 +80,22 @@ public class Main {
         }
 
         return false;
+    }
+
+    private static String popFromQueue(String[] queue, int positionIndex) {
+        String element = queue[positionIndex];
+
+        shiftLeftQueue(queue, positionIndex);
+
+        return element;
+    }
+
+    private static void shiftLeftQueue(String[] queue, int positionIndex) {
+        for (int i = positionIndex; i < queue.length - 1; i++) {
+            queue[i] = queue[i + 1];
+        }
+
+        queue[queue.length - 1] = null;
     }
 
     private static int getInteger(Scanner scan, String prompt, int rangeStart, int rangeEnd) {
@@ -157,6 +173,19 @@ public class Main {
             System.out.println("Successfully added customer to queue!");
         } else {
             System.out.println("Couldn't add customer to queue! (Selected queue is full!)");
+        }
+    }
+
+    private static void removeCustomerFromQueue(Scanner scan, String[][] cashiers) {
+        int cashierNumber = getInteger(scan, "Enter cashier number: ", 0, cashiers.length - 1);
+        int positionIndex = getInteger(scan, "Enter customer position: ", 0, cashiers[cashierNumber].length - 1);
+
+        String customerName = popFromQueue(cashiers[cashierNumber], positionIndex);
+
+        if (customerName == null) {
+            System.out.println("No customer found in that position!");
+        } else {
+            System.out.printf("Successfully removed customer %s from queue!\n", customerName);
         }
     }
 }
