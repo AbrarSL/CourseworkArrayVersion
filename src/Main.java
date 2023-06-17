@@ -61,16 +61,6 @@ public class Main {
         return scan.nextLine();
     }
 
-    private static boolean isQueueEmpty(String[] queue) {
-        for (String customer : queue) {
-            if (customer != null) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
     private static boolean isQueueFull(String[] queue) {
         for (String customer : queue) {
             if (customer == null) {
