@@ -82,6 +82,27 @@ public class Main {
         return false;
     }
 
+    private static int getQueueNumber(Scanner scan, int rangeStart, int rangeEnd) {
+        int cashierNumber = 0;
+
+        while (true) {
+            try {
+                cashierNumber = Integer.parseInt(
+                        inputPrompt(scan, "Select cashier: "));
+
+                if (cashierNumber <= rangeEnd && cashierNumber >= rangeStart) {
+                    break;
+                }
+
+                System.out.println("Number out of range! Range is " + rangeStart + " to " + rangeEnd);
+            } catch (Exception error) {
+                System.out.println("Please enter an integer!");
+            }
+        }
+
+        return cashierNumber;
+    }
+
     private static void viewAllQueues(String[][] cashiers) {
         final int longestQueueLength = 5;
         final int headerLength = 21;
@@ -130,23 +151,7 @@ public class Main {
     }
 
     private static void addCustomerToQueue(Scanner scan, String[][] cashiers) {
-        int cashierNumber = 0;
-
-        while (true) {
-            try {
-                cashierNumber = Integer.parseInt(
-                        inputPrompt(scan, "Select cashier (Enter 0, 1 or 2): "));
-
-                if (cashierNumber >= cashiers.length || cashierNumber < 0) {
-                    System.out.println("Number out of range!");
-                    continue;
-                }
-
-                break;
-            } catch (Exception error) {
-                System.out.println("Please enter a valid number! (0, 1 or 2)");
-            }
-        }
+        int cashierNumber = getQueueNumber(scan, 0, cashiers.length - 1);
 
         if (addToQueue(cashiers[cashierNumber],
                 inputPrompt(scan, "Enter name of customer: "))) {
