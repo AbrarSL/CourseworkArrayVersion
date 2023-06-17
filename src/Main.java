@@ -82,15 +82,14 @@ public class Main {
         return false;
     }
 
-    private static int getQueueNumber(Scanner scan, int rangeStart, int rangeEnd) {
-        int cashierNumber = 0;
+    private static int getInteger(Scanner scan, String prompt, int rangeStart, int rangeEnd) {
+        int selectedNumber = 0;
 
         while (true) {
             try {
-                cashierNumber = Integer.parseInt(
-                        inputPrompt(scan, "Select cashier: "));
+                selectedNumber = Integer.parseInt(inputPrompt(scan, prompt));
 
-                if (cashierNumber <= rangeEnd && cashierNumber >= rangeStart) {
+                if (selectedNumber <= rangeEnd && selectedNumber >= rangeStart) {
                     break;
                 }
 
@@ -100,7 +99,7 @@ public class Main {
             }
         }
 
-        return cashierNumber;
+        return selectedNumber;
     }
 
     private static void viewAllQueues(String[][] cashiers) {
@@ -151,14 +150,13 @@ public class Main {
     }
 
     private static void addCustomerToQueue(Scanner scan, String[][] cashiers) {
-        int cashierNumber = getQueueNumber(scan, 0, cashiers.length - 1);
+        int cashierNumber = getInteger(scan, "Enter cashier number: ", 0, cashiers.length - 1);
+        String customerName = inputPrompt(scan, "Enter name of customer: ");
 
-        if (addToQueue(cashiers[cashierNumber],
-                inputPrompt(scan, "Enter name of customer: "))) {
+        if (addToQueue(cashiers[cashierNumber], customerName)) {
             System.out.println("Successfully added customer to queue!");
         } else {
-            System.out.println(
-                    "Couldn't add customer to queue! (Selected Queue is full!)");
+            System.out.println("Couldn't add customer to queue! (Selected queue is full!)");
         }
     }
 }
