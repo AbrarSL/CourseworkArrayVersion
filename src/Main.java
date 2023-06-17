@@ -121,9 +121,9 @@ public class Main {
                 if (queue.length <= i) {
                     System.out.print(" ");
                 } else if (queue[i] == null) {
-                    System.out.print("O");
-                } else {
                     System.out.print("X");
+                } else {
+                    System.out.print("O");
                 }
 
                 System.out.print(" ".repeat(paddingLength));
@@ -132,8 +132,8 @@ public class Main {
             System.out.print("\n");
         }
 
-        System.out.println("X - Occupied");
-        System.out.println("O - Not Occupied");
+        System.out.println("O - Occupied");
+        System.out.println("X - Not Occupied");
     }
 
     private static void viewEmptyQueues(String[][] cashiers) {
