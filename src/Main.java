@@ -35,9 +35,9 @@ public class Main {
                 case "PCQ", "104":
                     burgerStock = removeServedCustomer(scan, cashiers, burgerStock);
                     break;
-//                case "VCS", "105":
-//                    viewSortedCustomers();
-//                    break;
+                case "VCS", "105":
+                    viewSortedCustomers(cashiers);
+                    break;
 //                case "SPD", "106":
 //                    storeProgramData();
 //                    break;
@@ -110,6 +110,87 @@ public class Main {
                 System.out.println("Please enter an integer!");
             }
         }
+    }
+
+    private static String[] concatenateQueues(String[][] cashiers) {
+        int totalLength = 0;
+
+        for (String[] queue : cashiers) {
+            totalLength += queue.length;
+        }
+
+        String[] tempQueue = new String[totalLength];
+        int queueIndex = 0;
+
+        for (String[] queue : cashiers) {
+            for (String name : queue) {
+                if (name != null) {
+                    tempQueue[queueIndex] = name;
+                    queueIndex++;
+                }
+            }
+        }
+
+        int validItemsLength = tempQueue.length;
+
+        for (int i = 0; i < tempQueue.length; i++) {
+            if (tempQueue[i] == null) {
+                validItemsLength = i;
+                break;
+            }
+        }
+
+        if (validItemsLength == tempQueue.length) {
+            return tempQueue;
+        }
+
+        String[] newQueue = new String[validItemsLength];
+
+        for (int i = 0; i < newQueue.length; i++) {
+            newQueue[i] = tempQueue[i];
+        }
+
+        return newQueue;
+    }
+
+    private static void bubbleSortQueue(String[] queue) {
+        boolean swapped = true;
+
+        while (swapped) {
+            swapped = false;
+
+            for (int i = 0; i < queue.length - 1; i++) {
+                if (stringIsGreater(queue[i], queue[i + 1])) {
+                    String temp = queue[i];
+                    queue[i] = queue[i + 1];
+                    queue[i + 1] = temp;
+
+                    swapped = true;
+                }
+            }
+        }
+    }
+
+    private static boolean recursiveCharCompare(String firstString, String secondString, int comparisonIndex) {
+        if (firstString.charAt(comparisonIndex) == secondString.charAt(comparisonIndex)) {
+            return recursiveCharCompare(firstString, secondString, ++comparisonIndex);
+        }
+
+        return firstString.charAt(comparisonIndex) > secondString.charAt(comparisonIndex);
+    }
+
+    private static boolean stringIsGreater(String firstString, String secondString) {
+        if (firstString.equals(secondString)) {
+            return false;
+        }
+
+        if (firstString.length() > secondString.length()) {
+            String paddedString = secondString + " ".repeat(firstString.length() - secondString.length());
+            return recursiveCharCompare(firstString, paddedString, 0);
+        }
+
+        String paddedString = firstString + " ".repeat(secondString.length() - firstString.length());
+        return recursiveCharCompare(paddedString, secondString, 0);
     }
 
     private static void viewAllQueues(String[][] cashiers) {
@@ -202,5 +283,16 @@ public class Main {
 
         System.out.printf("Successfully served customer %s!\n", customerName);
         return newStock;
+    }
+
+    private static void viewSortedCustomers(String[][] cashiers) {
+        String[] allCustomers = concatenateQueues(cashiers);
+        bubbleSortQueue(allCustomers);
+
+        System.out.println("Customers in queue,");
+
+        for (String customer : allCustomers) {
+            System.out.println(customer);
+        }
     }
 }
