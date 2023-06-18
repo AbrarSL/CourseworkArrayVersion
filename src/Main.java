@@ -32,9 +32,9 @@ public class Main {
                 case "RCQ", "103":
                     removeCustomerFromQueue(scan, cashiers);
                     break;
-//                case "PCQ", "104":
-//                    removeServedCustomer();
-//                    break;
+                case "PCQ", "104":
+                    burgerStock = removeServedCustomer(scan, cashiers, burgerStock);
+                    break;
 //                case "VCS", "105":
 //                    viewSortedCustomers();
 //                    break;
@@ -84,9 +84,7 @@ public class Main {
 
     private static String popFromQueue(String[] queue, int positionIndex) {
         String element = queue[positionIndex];
-
         shiftLeftQueue(queue, positionIndex);
-
         return element;
     }
 
@@ -99,14 +97,12 @@ public class Main {
     }
 
     private static int getInteger(Scanner scan, String prompt, int rangeStart, int rangeEnd) {
-        int selectedNumber = 0;
-
         while (true) {
             try {
-                selectedNumber = Integer.parseInt(inputPrompt(scan, prompt));
+                int selectedNumber = Integer.parseInt(inputPrompt(scan, prompt));
 
                 if (selectedNumber <= rangeEnd && selectedNumber >= rangeStart) {
-                    break;
+                    return selectedNumber;
                 }
 
                 System.out.println("Number out of range! Range is " + rangeStart + " to " + rangeEnd);
@@ -114,8 +110,6 @@ public class Main {
                 System.out.println("Please enter an integer!");
             }
         }
-
-        return selectedNumber;
     }
 
     private static void viewAllQueues(String[][] cashiers) {
@@ -171,9 +165,10 @@ public class Main {
 
         if (addToQueue(cashiers[cashierNumber], customerName)) {
             System.out.println("Successfully added customer to queue!");
-        } else {
-            System.out.println("Couldn't add customer to queue! (Selected queue is full!)");
+            return;
         }
+
+        System.out.println("Couldn't add customer to queue! (Selected queue is full!)");
     }
 
     private static void removeCustomerFromQueue(Scanner scan, String[][] cashiers) {
@@ -184,8 +179,28 @@ public class Main {
 
         if (customerName == null) {
             System.out.println("No customer found in that position!");
-        } else {
-            System.out.printf("Successfully removed customer %s from queue!\n", customerName);
+            return;
         }
+
+        System.out.printf("Successfully removed customer %s from queue!\n", customerName);
+    }
+
+    private static int removeServedCustomer(Scanner scan, String[][] cashiers, int stock) {
+        int newStock = stock - 5;
+
+        if (newStock < 0) {
+            System.out.println("Not enough items in stock! Cannot serve customer!");
+            return stock;
+        }
+
+        int cashierNumber = getInteger(scan, "Enter cashier number: ", 0, cashiers.length - 1);
+        String customerName = popFromQueue(cashiers[cashierNumber], 0);
+
+        if (customerName == null) {
+            System.out.println("No customer found at the cashier!");
+            return stock;
+        }
+
+        return newStock;
     }
 }
