@@ -174,7 +174,6 @@ public class Main {
     private static void removeCustomerFromQueue(Scanner scan, String[][] cashiers) {
         int cashierNumber = getInteger(scan, "Enter cashier number: ", 0, cashiers.length - 1);
         int positionIndex = getInteger(scan, "Enter customer position: ", 0, cashiers[cashierNumber].length - 1);
-
         String customerName = popFromQueue(cashiers[cashierNumber], positionIndex);
 
         if (customerName == null) {
@@ -201,6 +200,7 @@ public class Main {
             return stock;
         }
 
+        System.out.printf("Successfully served customer %s!\n", customerName);
         return newStock;
     }
 }
