@@ -1,3 +1,7 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
@@ -38,12 +42,12 @@ public class Main {
                 case "VCS", "105":
                     viewSortedCustomers(cashiers);
                     break;
-//                case "SPD", "106":
-//                    storeProgramData();
-//                    break;
-//                case "LPD", "107":
-//                    loadProgramData();
-//                    break;
+                case "SPD", "106":
+                    storeProgramData(cashiers, burgerStock);
+                    break;
+                case "LPD", "107":
+                    burgerStock = loadProgramData(cashiers, burgerStock);
+                    break;
 //                case "STK", "108":
 //                    viewBurgerStock();
 //                    break;
@@ -265,12 +269,12 @@ public class Main {
         System.out.printf("Successfully removed customer %s from queue!\n", customerName);
     }
 
-    private static int removeServedCustomer(Scanner scan, String[][] cashiers, int stock) {
-        int newStock = stock - 5;
+    private static int removeServedCustomer(Scanner scan, String[][] cashiers, int burgerStock) {
+        int newStock = burgerStock - 5;
 
         if (newStock < 0) {
             System.out.println("Not enough items in stock! Cannot serve customer!");
-            return stock;
+            return burgerStock;
         }
 
         int cashierNumber = getInteger(scan, "Enter cashier number: ", 0, cashiers.length - 1);
@@ -278,7 +282,7 @@ public class Main {
 
         if (customerName == null) {
             System.out.println("No customer found at the cashier!");
-            return stock;
+            return burgerStock;
         }
 
         System.out.printf("Successfully served customer %s!\n", customerName);
@@ -293,6 +297,78 @@ public class Main {
 
         for (String customer : allCustomers) {
             System.out.println(customer);
+        }
+    }
+
+    private static void storeProgramData(String[][] cashiers, int burgerStock) {
+        String fileName = "programState.csv";
+
+        try {
+            FileWriter fileWriter = new FileWriter(fileName);
+            fileWriter.write(burgerStock + ",\n");
+
+            for (String[] queue : cashiers) {
+                for (String name : queue) {
+                    fileWriter.write(name + ",");
+                }
+
+                fileWriter.write("\n");
+            }
+
+            System.out.println("Successfully stored data in file: " + fileName);
+
+            fileWriter.flush();
+        } catch (IOException error) {
+            System.out.println("Could not create or read file! Data not stored!");
+            System.out.println("Message is: " + error.getMessage());
+        }
+    }
+
+    private static int loadProgramData(String[][] cashiers, int burgerStock) {
+        String fileName = "programState.csv";
+        File file = new File(fileName);
+
+        try {
+            Scanner fileReader = new Scanner(file);
+
+            if (!fileReader.hasNextInt()) {
+                System.out.println("Stock data is not available! Save data may be corrupted!");
+                return burgerStock;
+            }
+
+            int savedStock = fileReader.nextInt();
+            fileReader.nextLine();
+
+            for (String[] cashier : cashiers) {
+                if (!fileReader.hasNextLine()) {
+                    System.out.println("Complete data is not available in save file!");
+                    System.out.println("Data may have been partially loaded!");
+                    return savedStock;
+                }
+
+                String[] dataLine = fileReader.nextLine().split(",");
+
+                if (dataLine.length < cashier.length) {
+                    System.out.println("Complete data is not available in save file!");
+                    System.out.println("Data may have been partially loaded!");
+                    return savedStock;
+                }
+
+                for (int i = 0; i < cashier.length; i++) {
+                    if (dataLine[i].equals("null")) {
+                        cashier[i] = null;
+                    } else {
+                        cashier[i] = dataLine[i];
+                    }
+                }
+            }
+
+            System.out.println("Successfully loaded data from file: " + fileName);
+            return savedStock;
+        } catch (FileNotFoundException fileError) {
+            System.out.println("File " + fileName + " not found!");
+            System.out.println("Cannot load data!");
+            return burgerStock;
         }
     }
 }
