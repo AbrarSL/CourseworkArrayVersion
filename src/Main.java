@@ -305,7 +305,7 @@ public class Main {
 
         try {
             FileWriter fileWriter = new FileWriter(fileName);
-            fileWriter.write(burgerStock + ",\n");
+            fileWriter.write(burgerStock + "\n");
 
             for (String[] queue : cashiers) {
                 for (String name : queue) {
