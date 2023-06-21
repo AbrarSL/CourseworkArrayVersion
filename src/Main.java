@@ -48,12 +48,12 @@ public class Main {
                 case "LPD", "107":
                     burgerStock = loadProgramData(cashiers, burgerStock);
                     break;
-//                case "STK", "108":
-//                    viewBurgerStock();
-//                    break;
-//                case "AFS", "109":
-//                    addToBurgerStock();
-//                    break;
+                case "STK", "108":
+                    viewBurgerStock(burgerStock);
+                    break;
+                case "AFS", "109":
+                    burgerStock = addToBurgerStock(scan, burgerStock);
+                    break;
                 default:
                     System.out.println("Unknown Command!");
             }
@@ -370,5 +370,21 @@ public class Main {
             System.out.println("Cannot load data!");
             return burgerStock;
         }
+    }
+
+    private static void viewBurgerStock(int burgerStock) {
+        System.out.println("Available stock is: " + burgerStock);
+    }
+
+    private static int addToBurgerStock(Scanner scan, int burgerStock) {
+        int newStock = burgerStock + getInteger(scan, "Enter the number of burgers to add: ", 0, 50);
+
+        if (newStock > 50) {
+            System.out.println("Stock capacity exceeded! Stock will not be updated!");
+            System.out.println("Maximum capacity is 50 items!");
+            return burgerStock;
+        }
+
+        return newStock;
     }
 }
