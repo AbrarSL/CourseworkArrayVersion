@@ -197,26 +197,18 @@ public class Main {
         }
     }
 
-    private static boolean recursiveCharCompare(String firstString, String secondString, int comparisonIndex) {
-        if (firstString.charAt(comparisonIndex) == secondString.charAt(comparisonIndex)) {
-            return recursiveCharCompare(firstString, secondString, ++comparisonIndex);
-        }
-
-        return firstString.charAt(comparisonIndex) > secondString.charAt(comparisonIndex);
-    }
-
     private static boolean stringIsGreater(String firstString, String secondString) {
-        if (firstString.equals(secondString)) {
-            return false;
+        String shortestString = firstString.length() > secondString.length() ? secondString : firstString;
+
+        for (int i = 0; i < shortestString.length(); i++) {
+            if (firstString.charAt(i) == secondString.charAt(i)) {
+                continue;
+            }
+
+            return firstString.charAt(i) > secondString.charAt(i);
         }
 
-        if (firstString.length() > secondString.length()) {
-            String paddedString = secondString + " ".repeat(firstString.length() - secondString.length());
-            return recursiveCharCompare(firstString, paddedString, 0);
-        }
-
-        String paddedString = firstString + " ".repeat(secondString.length() - firstString.length());
-        return recursiveCharCompare(paddedString, secondString, 0);
+        return false;
     }
 
     private static void viewAllQueues(String[][] cashiers) {
