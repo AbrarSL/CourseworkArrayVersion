@@ -15,8 +15,16 @@ public class Main {
 
         int burgerStock = 50;
 
+        displayHeader("Food Queue Management");
+        displayCommands();
+
         while (true) {
-            String command = inputPrompt(scan, "Enter a command: ").strip().toUpperCase();
+            String command = inputPrompt(scan, "Enter a command (press \"H\" for help): ").strip().toUpperCase();
+
+            if (command.equals("H")) {
+                displayCommands();
+                continue;
+            }
 
             if (command.equals("EXT") || command.equals("999")) {
                 System.out.println("Exiting program...");
@@ -58,6 +66,32 @@ public class Main {
                     System.out.println("Unknown Command!");
             }
         }
+    }
+
+    private static void displayCommands() {
+        final String commands = """
+101 or VEQ: View all empty queues.
+102 or ACQ: Add a customer to a queue.
+103 or RCQ: Remove a customer from a specific location on a queue.
+104 or PCQ: Remove a served customer.
+105 or VCS: View customers in alphabetical order.
+106 or SPD: Store program data into file.
+107 or LPD: Load program data from file.
+108 or STK: View remaining burger stock.
+109 or AFS: Add burgers to stock.
+999 or EXT: Exit the program.
+""";
+
+        System.out.println(commands);
+    }
+
+    private static void displayHeader(String headerText) {
+        final int headerLength = headerText.length() + 10;
+        final int titlePaddingLength = (headerLength - 2 - headerText.length()) / 2;
+
+        System.out.println("*".repeat(headerLength));
+        System.out.println("*" + " ".repeat(titlePaddingLength) + headerText + " ".repeat(titlePaddingLength) + "*");
+        System.out.println("*".repeat(headerLength));
     }
 
     private static String inputPrompt(Scanner scan, String prompt) {
@@ -198,15 +232,12 @@ public class Main {
     }
 
     private static void viewAllQueues(String[][] cashiers) {
-        final int longestQueueLength = 5;
-        final int headerLength = 21;
-        final int paddingLength = ((headerLength / cashiers.length) - 1) / 2;
         final String titleText = "Cashier";
-        final int titlePaddingLength = (headerLength - 2 - titleText.length()) / 2;
+        final int longestQueueLength = 5;
+        final int headerLength = titleText.length() + 10;
+        final int paddingLength = ((headerLength / cashiers.length) - 1) / 2;
 
-        System.out.println("*".repeat(headerLength));
-        System.out.println("*" + " ".repeat(titlePaddingLength) + titleText + " ".repeat(titlePaddingLength) + "*");
-        System.out.println("*".repeat(headerLength));
+        displayHeader(titleText);
 
         for (int i = 0; i < longestQueueLength; i++) {
             for (String[] queue : cashiers) {
