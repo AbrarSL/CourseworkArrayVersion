@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class Main {
@@ -198,7 +199,10 @@ public class Main {
     }
 
     private static boolean shouldStringSwap(String firstString, String secondString) {
+        firstString = firstString.toLowerCase();
+        secondString = secondString.toLowerCase();
         String shortestString = firstString.length() > secondString.length() ? secondString : firstString;
+        boolean isLengthEqual = firstString.length() == secondString.length();
 
         for (int i = 0; i < shortestString.length(); i++) {
             if (firstString.charAt(i) == secondString.charAt(i)) {
@@ -208,7 +212,7 @@ public class Main {
             return firstString.charAt(i) > secondString.charAt(i);
         }
 
-        if (firstString.length() == secondString.length()) {
+        if (isLengthEqual) {
             return false;
         }
 
