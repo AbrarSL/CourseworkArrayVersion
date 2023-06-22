@@ -21,17 +21,15 @@ public class Main {
         while (true) {
             String command = inputPrompt(scan, "Enter a command (press \"H\" for help): ").strip().toUpperCase();
 
-            if (command.equals("H")) {
-                displayCommands();
-                continue;
-            }
-
             if (command.equals("EXT") || command.equals("999")) {
                 System.out.println("Exiting program...");
                 break;
             }
 
             switch (command) {
+                case "H":
+                    displayCommands();
+                    break;
                 case "VFQ", "100":
                     viewAllQueues(cashiers);
                     break;
@@ -70,17 +68,17 @@ public class Main {
 
     private static void displayCommands() {
         final String commands = """
-101 or VEQ: View all empty queues.
-102 or ACQ: Add a customer to a queue.
-103 or RCQ: Remove a customer from a specific location on a queue.
-104 or PCQ: Remove a served customer.
-105 or VCS: View customers in alphabetical order.
-106 or SPD: Store program data into file.
-107 or LPD: Load program data from file.
-108 or STK: View remaining burger stock.
-109 or AFS: Add burgers to stock.
-999 or EXT: Exit the program.
-""";
+                101 or VEQ: View all empty queues.
+                102 or ACQ: Add a customer to a queue.
+                103 or RCQ: Remove a customer from a specific location on a queue.
+                104 or PCQ: Remove a served customer.
+                105 or VCS: View customers in alphabetical order.
+                106 or SPD: Store program data into file.
+                107 or LPD: Load program data from file.
+                108 or STK: View remaining burger stock.
+                109 or AFS: Add burgers to stock.
+                999 or EXT: Exit the program.
+                """;
 
         System.out.println(commands);
     }
@@ -97,16 +95,6 @@ public class Main {
     private static String inputPrompt(Scanner scan, String prompt) {
         System.out.print(prompt);
         return scan.nextLine();
-    }
-
-    private static boolean isQueueFull(String[] queue) {
-        for (String customer : queue) {
-            if (customer == null) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     private static boolean addToQueue(String[] queue, String customer) {
@@ -265,7 +253,7 @@ public class Main {
         String[][] tempQueues = new String[3][];
 
         for (int i = 0; i < cashiers.length; i++) {
-            if (!isQueueFull(cashiers[i])) {
+            if (cashiers[i][cashiers[i].length] == null) {
                 tempQueues[i] = cashiers[i];
             } else {
                 tempQueues[i] = new String[0];
