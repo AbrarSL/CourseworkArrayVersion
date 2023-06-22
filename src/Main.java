@@ -186,7 +186,7 @@ public class Main {
             swapped = false;
 
             for (int i = 0; i < queue.length - 1; i++) {
-                if (stringIsGreater(queue[i], queue[i + 1])) {
+                if (shouldStringSwap(queue[i], queue[i + 1])) {
                     String temp = queue[i];
                     queue[i] = queue[i + 1];
                     queue[i + 1] = temp;
@@ -197,7 +197,7 @@ public class Main {
         }
     }
 
-    private static boolean stringIsGreater(String firstString, String secondString) {
+    private static boolean shouldStringSwap(String firstString, String secondString) {
         String shortestString = firstString.length() > secondString.length() ? secondString : firstString;
 
         for (int i = 0; i < shortestString.length(); i++) {
@@ -208,7 +208,11 @@ public class Main {
             return firstString.charAt(i) > secondString.charAt(i);
         }
 
-        return false;
+        if (firstString.length() == secondString.length()) {
+            return false;
+        }
+
+        return secondString == shortestString;
     }
 
     private static void viewAllQueues(String[][] cashiers) {
