@@ -118,6 +118,37 @@ public class Main {
         }
     }
 
+    private static String validatedInputPrompt(String prompt) {
+        String[] forbiddenStrings = {"null"};
+        String userInput = "";
+        boolean notValid = true;
+
+        System.out.println("The following strings are forbidden,");
+        for (String forbiddenText : forbiddenStrings) {
+            System.out.println(forbiddenText);
+        }
+
+        while (notValid) {
+            userInput = inputPrompt(prompt);
+
+            if (userInput.length() == 0) {
+                System.out.println("Input can not be empty!");
+                continue;
+            }
+
+            notValid = false;
+
+            for (String forbiddenText : forbiddenStrings) {
+                if (userInput.equals(forbiddenText)) {
+                    notValid = true;
+                    break;
+                }
+            }
+        }
+
+        return userInput;
+    }
+
     private static boolean addToQueue(String[] queue, String customer) {
         for (int i = 0; i < queue.length; i++) {
             if (queue[i] == null) {
@@ -281,7 +312,7 @@ public class Main {
 
     private static void addCustomerToQueue() {
         int cashierNumber = intInputPrompt("Enter cashier number: ", 0, cashiers.length - 1);
-        String customerName = inputPrompt("Enter name of customer: ");
+        String customerName = validatedInputPrompt("Enter name of customer: ");
 
         if (addToQueue(cashiers[cashierNumber], customerName)) {
             System.out.println("Successfully added customer to queue!");
