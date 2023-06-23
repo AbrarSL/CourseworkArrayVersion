@@ -8,6 +8,10 @@ public class Main {
 
     private static final Scanner scanner = new Scanner(System.in);
     private static final String[][] cashiers = new String[3][];
+    private static final int burgersPerCustomer = 5;
+    private static final int maxBurgerStock = 50;
+    private static final int lowBurgerStock = 10;
+    private static final String defaultFileName = "programState.txt";
     private static int burgerStock = 50;
 
     public static void main(String[] args) {
@@ -457,7 +461,7 @@ public class Main {
      * to a negative value.
      */
     private static void removeServedCustomer() {
-        int newStock = burgerStock - 5;
+        int newStock = burgerStock - burgersPerCustomer;
 
         if (newStock < 0) {
             System.out.println("Not enough items in stock! Cannot serve customer!");
@@ -472,7 +476,7 @@ public class Main {
             return;
         }
 
-        if (newStock <= 10) {
+        if (newStock <= lowBurgerStock) {
             System.out.println("Warning: Stock is running low!");
         }
 
@@ -501,10 +505,8 @@ public class Main {
      * into a file in the current directory.
      */
     private static void storeProgramData() {
-        String fileName = "programState.csv";
-
         try {
-            FileWriter fileWriter = new FileWriter(fileName);
+            FileWriter fileWriter = new FileWriter(defaultFileName);
             fileWriter.write(burgerStock + "\n");
 
             for (String[] queue : cashiers) {
@@ -515,7 +517,7 @@ public class Main {
                 fileWriter.write("\n");
             }
 
-            System.out.println("Successfully stored data in file: " + fileName);
+            System.out.println("Successfully stored data in file: " + defaultFileName);
 
             fileWriter.flush();
         } catch (IOException error) {
@@ -530,8 +532,7 @@ public class Main {
      * {@link Main#cashiers}
      */
     private static void loadProgramData() {
-        String fileName = "programState.csv";
-        File file = new File(fileName);
+        File file = new File(defaultFileName);
 
         try {
             Scanner fileReader = new Scanner(file);
@@ -570,10 +571,10 @@ public class Main {
                 }
             }
 
-            System.out.println("Successfully loaded data from file: " + fileName);
+            System.out.println("Successfully loaded data from file: " + defaultFileName);
             burgerStock = savedStock;
         } catch (FileNotFoundException fileError) {
-            System.out.println("File " + fileName + " not found!");
+            System.out.println("File " + defaultFileName + " not found!");
             System.out.println("Cannot load data!");
         }
     }
@@ -593,11 +594,11 @@ public class Main {
      * This method will only mutate {@link Main#burgerStock} if it will not exceed 50.
      */
     private static void addToBurgerStock() {
-        int newStock = burgerStock + intInputPrompt("Enter the number of burgers to add: ", 0, 50);
+        int newStock = burgerStock + intInputPrompt("Enter the number of burgers to add: ", 0, maxBurgerStock);
 
-        if (newStock > 50) {
+        if (newStock > maxBurgerStock) {
             System.out.println("Stock capacity exceeded! Stock will not be updated!");
-            System.out.println("Maximum capacity is 50 items!");
+            System.out.printf("Maximum capacity is %s items!\n", maxBurgerStock);
             return;
         }
 
