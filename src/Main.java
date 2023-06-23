@@ -147,7 +147,7 @@ public class Main {
                     return selectedNumber;
                 }
 
-                System.out.println("Number out of range! Range is " + rangeStart + " to " + rangeEnd);
+                System.out.printf("Number out of range! Range is %d to %d!\n", rangeStart, rangeEnd);
             } catch (NumberFormatException exception) {
                 System.out.println("Please enter an integer!");
             }
@@ -364,6 +364,37 @@ public class Main {
         return secondString == shortestString; // The references are compared intentionally
     }
 
+    private static boolean validateSaveFile(File saveFile) throws FileNotFoundException {
+        Scanner fileReader = new Scanner(saveFile);
+
+        if (!fileReader.hasNextInt()) { // Ensure stock data is available
+            System.out.println("File Validation Error: Stock data not available!");
+            fileReader.close();
+            return false;
+        }
+
+        fileReader.nextLine();
+
+        for (int i = 0; i < cashiers.length; i++) { // Ensure file contains enough data for all queues
+            if (!fileReader.hasNextLine()) {
+                System.out.println("File Validation Error: File does not contain all queues!");
+                fileReader.close();
+                return false;
+            }
+
+            String[] dataLine = fileReader.nextLine().split(",");
+
+            if (dataLine.length < cashiers[i].length) {
+                System.out.println("File Validation Error: Queues in file do not contain enough data!");
+                fileReader.close();
+                return false;
+            }
+        }
+
+        fileReader.close();
+        return true;
+    }
+
     /**
      * Implements the VFQ/100 option for the program.
      * The vacancy of all the spots in all queues are printed in a formatted manner.
@@ -518,11 +549,12 @@ public class Main {
                 fileWriter.write("\n");
             }
 
-            System.out.println("Successfully stored data in file: " + defaultFileName);
+            System.out.printf("Successfully stored data in file \"%s\"\n", defaultFileName);
 
             fileWriter.flush();
         } catch (IOException error) {
-            System.out.println("Could not create or read file! Data not stored!");
+            System.out.printf("File \"%s\" could not be created or read!\n", defaultFileName);
+            System.out.println("Data not stored!");
         }
     }
 
@@ -533,11 +565,10 @@ public class Main {
      * The file must contain text in a CSV format in the right order.
      */
     private static void loadProgramData() {
-        File file = new File(defaultFileName);
+        File saveFile = new File(defaultFileName);
 
-        try (Scanner fileReader = new Scanner(file)) {
-            if (!fileReader.hasNextInt()) { // Ensure stock value is available
-                System.out.println("Stock data is not available! Save data may be corrupted!");
+        try (Scanner fileReader = new Scanner(saveFile)) {
+            if (!validateSaveFile(saveFile)) {
                 System.out.println("Data not loaded!");
                 return;
             }
@@ -546,21 +577,7 @@ public class Main {
             fileReader.nextLine();
 
             for (String[] queue : cashiers) {
-                if (!fileReader.hasNextLine()) { // Ensure all queues are available in file
-                    System.out.println("Save file does not contain enough data!");
-                    System.out.println("Data may have been partially loaded!");
-                    burgerStock = savedStock;
-                    return;
-                }
-
                 String[] dataLine = fileReader.nextLine().split(",");
-
-                if (dataLine.length < queue.length) { // Ensure enough data is available for each queue
-                    System.out.println("Parsed data chunk is invalid!");
-                    System.out.println("Data may have been partially loaded!");
-                    burgerStock = savedStock;
-                    return;
-                }
 
                 for (int i = 0; i < queue.length; i++) { // Parse data and store in program memory
                     if (dataLine[i].equals("null")) {
@@ -571,10 +588,10 @@ public class Main {
                 }
             }
 
-            System.out.println("Successfully loaded data from file: " + defaultFileName);
             burgerStock = savedStock;
+            System.out.printf("Successfully loaded data from file \"%s\"\n", saveFile.getName());
         } catch (FileNotFoundException fileError) {
-            System.out.println("File " + defaultFileName + " not found!");
+            System.out.printf("File \"%s\" could not be found or read!\n", saveFile.getName());
             System.out.println("Cannot load data!");
         }
     }
