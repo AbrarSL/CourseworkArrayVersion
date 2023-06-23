@@ -62,12 +62,20 @@ public class Main {
         }
     }
 
+    /**
+     * Initializes the queues.
+     * This must *always* be called at the beginning of the main() method.
+     * This method mutates {@link Main#cashiers}
+     */
     private static void initQueues() {
         cashiers[0] = new String[2];
         cashiers[1] = new String[3];
         cashiers[2] = new String[5];
     }
 
+    /**
+     * Displays all the available commands to the user via stdout.
+     */
     private static void displayCommands() {
         displayHeader("Foodies Fave Food Center");
 
@@ -88,6 +96,10 @@ public class Main {
         System.out.println(commands);
     }
 
+    /**
+     * Displays some header text with added decorations.
+     * @param headerText The text that will be displayed.
+     */
     private static void displayHeader(String headerText) {
         final int headerLength = headerText.length() + 10;
         final int titlePaddingLength = (headerLength - 2 - headerText.length()) / 2;
@@ -97,11 +109,25 @@ public class Main {
         System.out.println("*".repeat(headerLength));
     }
 
+    /**
+     * Prompts the user for an input.
+     * Do note that the method does not add a newline to the prompt.
+     * @param prompt The prompt text that will be shown to the user.
+     * @return A String object that is not validated.
+     */
     private static String inputPrompt(String prompt) {
         System.out.print(prompt);
         return scanner.nextLine();
     }
 
+    /**
+     * Prompts the user for an integer input within a given range.
+     * This method will block until a valid input is given.
+     * @param prompt The prompt text that will be shown to the user.
+     * @param rangeStart The inclusive starting point.
+     * @param rangeEnd The inclusive ending point.
+     * @return An integer within the given range.
+     */
     private static int intInputPrompt(String prompt, int rangeStart, int rangeEnd) {
         while (true) {
             try {
@@ -118,6 +144,13 @@ public class Main {
         }
     }
 
+    /**
+     * Prompts the user for validated input.
+     * This method will block until a valid input is given.
+     * The validation cases are hardcoded within the method.
+     * @param prompt The prompt text that will be shown to the user.
+     * @return A validated String object.
+     */
     private static String validatedInputPrompt(String prompt) {
         String[] forbiddenStrings = {"null"};
         String userInput = "";
@@ -149,6 +182,14 @@ public class Main {
         return userInput;
     }
 
+    /**
+     * Adds the given string to the given queue/array.
+     * The string is always added to the first 'null' position found in the array.
+     * The given arrays are mutated in-place
+     * @param queue A 1-dimensional String array that will be mutated.
+     * @param customer The string to be added to the array.
+     * @return 'false' if the operation failed (No free space in the array).
+     */
     private static boolean addToQueue(String[] queue, String customer) {
         for (int i = 0; i < queue.length; i++) {
             if (queue[i] == null) {
@@ -160,12 +201,27 @@ public class Main {
         return false;
     }
 
+    /**
+     * Removes a string from the given array at the given index.
+     * This method will reorder the array to fill any 'null' holes.
+     * The given array is mutated in-place.
+     * @param queue A 1-dimensional String array that will be mutated.
+     * @param positionIndex The index of the String to be removed.
+     * @return The String that was removed from the array.
+     */
     private static String popFromQueue(String[] queue, int positionIndex) {
         String element = queue[positionIndex];
         shiftLeftQueue(queue, positionIndex);
         return element;
     }
 
+    /**
+     * Shifts all elements after the starting index to the left by 1 position.
+     * The element at the starting index is overwritten and the last element is made null.
+     * The given array is mutated in-place.
+     * @param queue A 1-dimensional String array that will be mutated.
+     * @param positionIndex The index at which the shift operation should start.
+     */
     private static void shiftLeftQueue(String[] queue, int positionIndex) {
         for (int i = positionIndex; i < queue.length - 1; i++) {
             queue[i] = queue[i + 1];
@@ -174,6 +230,11 @@ public class Main {
         queue[queue.length - 1] = null;
     }
 
+    /**
+     * Find the longest child queue/array from a 2-dimensional array.
+     * @param queues A 2-dimensional String array.
+     * @return A reference to the longest 1-dimensional array.
+     */
     private static String[] getLongestQueue(String[][] queues) {
         String[] longest = queues[0];
 
@@ -186,6 +247,13 @@ public class Main {
         return longest;
     }
 
+    /**
+     * Flattens a 2-dimensional array into a 1-dimensional array.
+     * This method will not copy null pointers.
+     * The size of the returned array will be equal to the number of valid (non-null) String refs from the input array.
+     * @param queues A 2-dimensional String array.
+     * @return A 1-dimensional array that contains all the valid elements from the input array.
+     */
     private static String[] flattenQueues(String[][] queues) {
         int totalLength = 0;
 
@@ -227,6 +295,13 @@ public class Main {
         return newQueue;
     }
 
+    /**
+     * Sorts a given 1-dimensional String array according to alphabetical order.
+     * The method implements the Bubble Sort algorithm.
+     * The given array is sorted in-place.
+     * @param queue A 1-dimensional String array that will be mutated.
+     * @see <a href="https://www.geeksforgeeks.org/bubble-sort/">Algorithm reference used.</a>
+     */
     private static void bubbleSortQueue(String[] queue) {
         boolean swapped = true;
 
@@ -245,6 +320,15 @@ public class Main {
         }
     }
 
+    /**
+     * Indicates if two strings should be swapped according to alphabetical order.
+     * Case is ignored as all strings are converted to lowercase.
+     * Shorter strings are considered alphabetically higher.
+     * Equivalent strings maintain position.
+     * @param firstString The first string.
+     * @param secondString The second string.
+     * @return 'true' if strings should be swapped to maintain alphabetical order.
+     */
     private static boolean stringShouldSwap(String firstString, String secondString) {
         firstString = firstString.toLowerCase();
         secondString = secondString.toLowerCase();
@@ -266,6 +350,11 @@ public class Main {
         return secondString == shortestString;
     }
 
+    /**
+     * Implements the VFQ/100 option for the program.
+     * The vacancy of all the spots in all queues are printed in a formatted manner.
+     * @param queues A 2-dimensional string array.
+     */
     private static void viewAllQueues(String[][] queues) {
         final String titleText = "Cashier";
         final int longestQueueLength = getLongestQueue(queues).length;
@@ -296,6 +385,10 @@ public class Main {
         System.out.println("X - Not Occupied");
     }
 
+    /**
+     * Implements the VEQ/101 option for the program.
+     * Displays all queues that have at least 1 empty slot.
+     */
     private static void viewEmptyQueues() {
         String[][] tempQueues = new String[3][];
 
@@ -310,6 +403,11 @@ public class Main {
         viewAllQueues(tempQueues);
     }
 
+    /**
+     * Implements the ACQ/102 option for the program.
+     * The user is prompted for the cashier number (0-indexed) and the name of the customer to be added.
+     * This method mutates {@link Main#cashiers}.
+     */
     private static void addCustomerToQueue() {
         int cashierNumber = intInputPrompt("Enter cashier number: ", 0, cashiers.length - 1);
         String customerName = validatedInputPrompt("Enter name of customer: ");
@@ -322,6 +420,11 @@ public class Main {
         System.out.println("Couldn't add customer to queue! (Selected queue is full!)");
     }
 
+    /**
+     * Implements the RCQ/103 option for the program.
+     * The user is prompted for the cashier number (0-indexed) and the position (0-indexed) of the customer to remove.
+     * This method mutates {@link Main#cashiers}.
+     */
     private static void removeCustomerFromQueue() {
         int cashierNumber = intInputPrompt("Enter cashier number: ", 0, cashiers.length - 1);
         int positionIndex = intInputPrompt("Enter customer position: ", 0, cashiers[cashierNumber].length - 1);
@@ -335,6 +438,12 @@ public class Main {
         System.out.printf("Successfully removed customer %s from queue!\n", customerName);
     }
 
+    /**
+     * Implements the PCQ/104 option for the program.
+     * The user is prompted for the cashier number (0-indexed) to serve customers from. Served customers are removed.
+     * This method may mutate the {@link Main#burgerStock} field if doing so would not set {@link Main#burgerStock}
+     * to a negative value.
+     */
     private static void removeServedCustomer() {
         int newStock = burgerStock - 5;
 
@@ -359,6 +468,10 @@ public class Main {
         System.out.printf("Successfully served customer %s!\n", customerName);
     }
 
+    /**
+     * Implements the VCS/105 option for the program.
+     * All the customer names stored in {@link Main#cashiers} are displayed to the user in alphabetical order.
+     */
     private static void viewSortedCustomers() {
         String[] allCustomers = flattenQueues(cashiers);
         bubbleSortQueue(allCustomers);
@@ -370,6 +483,11 @@ public class Main {
         }
     }
 
+    /**
+     * Implements the SPD/106 option for the program.
+     * This method stores data from {@link Main#burgerStock} and {@link Main#cashiers}
+     * into a file in the current directory.
+     */
     private static void storeProgramData() {
         String fileName = "programState.csv";
 
@@ -394,6 +512,11 @@ public class Main {
         }
     }
 
+    /**
+     * Implements the LPD/107 option for the program.
+     * This method loads data from a file in the current directory into {@link Main#burgerStock} and
+     * {@link Main#cashiers}
+     */
     private static void loadProgramData() {
         String fileName = "programState.csv";
         File file = new File(fileName);
@@ -443,11 +566,20 @@ public class Main {
         }
     }
 
+    /**
+     * Implements STK/108 option for the program.
+     * This method displays the remaining stock ({@link Main#burgerStock}) to the user.
+     */
     private static void viewBurgerStock() {
         displayHeader("Stock Information");
         System.out.println("Available stock is: " + burgerStock);
     }
 
+    /**
+     * Implements AFS/109 option for the program.
+     * This method prompts the user for a number and adds that amount to the stock ({@link Main#burgerStock}).
+     * This method will only mutate {@link Main#burgerStock} if it will not exceed 50.
+     */
     private static void addToBurgerStock() {
         int newStock = burgerStock + intInputPrompt("Enter the number of burgers to add: ", 0, 50);
 
