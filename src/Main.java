@@ -371,7 +371,7 @@ public class Main {
             return false;
         }
 
-        return secondString == shortestString; // Shorter string is considered alphabetically higher
+        return secondString == shortestString; // The references are compared intentionally
     }
 
     /**
