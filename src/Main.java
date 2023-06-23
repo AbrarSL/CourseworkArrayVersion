@@ -309,7 +309,7 @@ public class Main {
      * The given array is sorted in-place.
      *
      * @param queue A 1-dimensional String array that will be mutated.
-     * @see <a href="https://www.geeksforgeeks.org/bubble-sort/">Algorithm reference used.</a>
+     * @see <a href="https://www.geeksforgeeks.org/bubble-sort/">Algorithm Reference.</a>
      */
     private static void bubbleSortQueue(String[] queue) {
         boolean swapped = true;
@@ -364,6 +364,15 @@ public class Main {
         return secondString == shortestString; // The references are compared intentionally
     }
 
+    /**
+     * Validate the contents of the given file.
+     * The file is checked to ensure that the data in the file is in the proper format and length to
+     * fill the structures in the program memory.
+     *
+     * @param saveFile The File object that is to be validated.
+     * @return 'true' will be returned if the file passed all validations.
+     * @throws FileNotFoundException This exception will be thrown if the file cannot be found.
+     */
     private static boolean validateSaveFile(File saveFile) throws FileNotFoundException {
         Scanner fileReader = new Scanner(saveFile);
 
@@ -488,9 +497,9 @@ public class Main {
 
     /**
      * Implements the PCQ/104 option for the program.
-     * The user is prompted for the cashier number (0-indexed) to serve customers from. Served customers are removed.
-     * This method may mutate the {@link Main#burgerStock} field if doing so would not set {@link Main#burgerStock}
-     * to a negative value.
+     * The user is prompted for the cashier number (0-indexed) to serve customers from.
+     * Served customers are removed and {@link Main#burgersPerCustomer} is subtracted from {@link Main#burgerStock}
+     * only if doing so would not set {@link Main#burgerStock} to a negative value.
      */
     private static void removeServedCustomer() {
         int newStock = burgerStock - burgersPerCustomer;
@@ -534,7 +543,7 @@ public class Main {
     /**
      * Implements the SPD/106 option for the program.
      * This method stores data from {@link Main#burgerStock} and {@link Main#cashiers}
-     * into a file in the current directory.
+     * into the file {@link Main#defaultFileName} in the current directory.
      * Data is stored as text in a CSV format.
      */
     private static void storeProgramData() {
@@ -560,8 +569,9 @@ public class Main {
 
     /**
      * Implements the LPD/107 option for the program.
-     * This method loads data from a file in the current directory into {@link Main#burgerStock} and
+     * This method loads data from the file {@link Main#defaultFileName} in the current directory into {@link Main#burgerStock} and
      * {@link Main#cashiers}.
+     * The file is validated before loading.
      * The file must contain text in a CSV format in the right order.
      */
     private static void loadProgramData() {
@@ -608,7 +618,7 @@ public class Main {
     /**
      * Implements AFS/109 option for the program.
      * This method prompts the user for a number and adds that amount to the stock ({@link Main#burgerStock}).
-     * This method will only mutate {@link Main#burgerStock} if it will not exceed 50.
+     * This method will only mutate {@link Main#burgerStock} if it will not exceed {@link Main#maxBurgerStock}.
      */
     private static void addToBurgerStock() {
         int newStock = burgerStock + intInputPrompt("Enter the number of burgers to add: ", 0, maxBurgerStock);
