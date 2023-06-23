@@ -48,7 +48,7 @@ public class Main {
                     storeProgramData();
                     break;
                 case "LPD", "107":
-                   loadProgramData();
+                    loadProgramData();
                     break;
                 case "STK", "108":
                     viewBurgerStock();
@@ -98,6 +98,7 @@ public class Main {
 
     /**
      * Displays some header text with added decorations.
+     *
      * @param headerText The text that will be displayed.
      */
     private static void displayHeader(String headerText) {
@@ -112,6 +113,7 @@ public class Main {
     /**
      * Prompts the user for an input.
      * Do note that the method does not add a newline to the prompt.
+     *
      * @param prompt The prompt text that will be shown to the user.
      * @return A String object that is not validated.
      */
@@ -123,9 +125,10 @@ public class Main {
     /**
      * Prompts the user for an integer input within a given range.
      * This method will block until a valid input is given.
-     * @param prompt The prompt text that will be shown to the user.
+     *
+     * @param prompt     The prompt text that will be shown to the user.
      * @param rangeStart The inclusive starting point.
-     * @param rangeEnd The inclusive ending point.
+     * @param rangeEnd   The inclusive ending point.
      * @return An integer within the given range.
      */
     private static int intInputPrompt(String prompt, int rangeStart, int rangeEnd) {
@@ -148,6 +151,7 @@ public class Main {
      * Prompts the user for validated input.
      * This method will block until a valid input is given.
      * The validation cases are hardcoded within the method.
+     *
      * @param prompt The prompt text that will be shown to the user.
      * @return A validated String object.
      */
@@ -186,7 +190,8 @@ public class Main {
      * Adds the given string to the given queue/array.
      * The string is always added to the first 'null' position found in the array.
      * The given arrays are mutated in-place
-     * @param queue A 1-dimensional String array that will be mutated.
+     *
+     * @param queue    A 1-dimensional String array that will be mutated.
      * @param customer The string to be added to the array.
      * @return 'false' if the operation failed (No free space in the array).
      */
@@ -205,7 +210,8 @@ public class Main {
      * Removes a string from the given array at the given index.
      * This method will reorder the array to fill any 'null' holes.
      * The given array is mutated in-place.
-     * @param queue A 1-dimensional String array that will be mutated.
+     *
+     * @param queue         A 1-dimensional String array that will be mutated.
      * @param positionIndex The index of the String to be removed.
      * @return The String that was removed from the array.
      */
@@ -219,7 +225,8 @@ public class Main {
      * Shifts all elements after the starting index to the left by 1 position.
      * The element at the starting index is overwritten and the last element is made null.
      * The given array is mutated in-place.
-     * @param queue A 1-dimensional String array that will be mutated.
+     *
+     * @param queue         A 1-dimensional String array that will be mutated.
      * @param positionIndex The index at which the shift operation should start.
      */
     private static void shiftLeftQueue(String[] queue, int positionIndex) {
@@ -232,6 +239,7 @@ public class Main {
 
     /**
      * Find the longest child queue/array from a 2-dimensional array.
+     *
      * @param queues A 2-dimensional String array.
      * @return A reference to the longest 1-dimensional array.
      */
@@ -251,6 +259,7 @@ public class Main {
      * Flattens a 2-dimensional array into a 1-dimensional array.
      * This method will not copy null pointers.
      * The size of the returned array will be equal to the number of valid (non-null) String refs from the input array.
+     *
      * @param queues A 2-dimensional String array.
      * @return A 1-dimensional array that contains all the valid elements from the input array.
      */
@@ -299,6 +308,7 @@ public class Main {
      * Sorts a given 1-dimensional String array according to alphabetical order.
      * The method implements the Bubble Sort algorithm.
      * The given array is sorted in-place.
+     *
      * @param queue A 1-dimensional String array that will be mutated.
      * @see <a href="https://www.geeksforgeeks.org/bubble-sort/">Algorithm reference used.</a>
      */
@@ -325,7 +335,8 @@ public class Main {
      * Case is ignored as all strings are converted to lowercase.
      * Shorter strings are considered alphabetically higher.
      * Equivalent strings maintain position.
-     * @param firstString The first string.
+     *
+     * @param firstString  The first string.
      * @param secondString The second string.
      * @return 'true' if strings should be swapped to maintain alphabetical order.
      */
@@ -353,6 +364,7 @@ public class Main {
     /**
      * Implements the VFQ/100 option for the program.
      * The vacancy of all the spots in all queues are printed in a formatted manner.
+     *
      * @param queues A 2-dimensional string array.
      */
     private static void viewAllQueues(String[][] queues) {
