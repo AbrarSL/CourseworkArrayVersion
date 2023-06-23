@@ -20,7 +20,7 @@ public class Main {
 
         while (true) {
             // All commands are converted to uppercase for easier parsing
-            String command = inputPrompt("Enter a command (press \"H\" for help): ").strip().toUpperCase();
+            String command = inputPrompt("Enter a command (\"H\" or 000 for Help Menu): ").strip().toUpperCase();
 
             if (command.equals("EXT") || command.equals("999")) {
                 System.out.println("Exiting program...");
@@ -29,7 +29,7 @@ public class Main {
 
             // Option selection
             switch (command) {
-                case "H":
+                case "H", "000":
                     displayCommands();
                     break;
                 case "VFQ", "100":
@@ -79,6 +79,7 @@ public class Main {
     }
 
     /**
+     * Implements H/000 option for the program.
      * Displays all the available commands to the user via stdout.
      */
     private static void displayCommands() {
@@ -141,8 +142,7 @@ public class Main {
             try {
                 int selectedNumber = Integer.parseInt(inputPrompt(prompt));
 
-                // Ensure number is within range
-                if (selectedNumber <= rangeEnd && selectedNumber >= rangeStart) {
+                if (selectedNumber <= rangeEnd && selectedNumber >= rangeStart) { // Ensure number is within range
                     return selectedNumber;
                 }
 
@@ -164,13 +164,13 @@ public class Main {
     private static String validatedInputPrompt(String prompt) {
         // TODO: Refactor this method to use RegEx
         // TODO: Add more validation rules
-        String[] forbiddenStrings = {"null"};
+        String[] invalidStrings = {"null", ","};
         String userInput = "";
         boolean notValid = true;
 
-        System.out.println("The following strings are forbidden,");
-        for (String forbiddenText : forbiddenStrings) {
-            System.out.println(forbiddenText);
+        System.out.println("The following strings are considered invalid,");
+        for (String invalidText : invalidStrings) {
+            System.out.printf("\"%s\"", invalidText);
         }
 
         while (notValid) {
@@ -183,8 +183,8 @@ public class Main {
 
             notValid = false;
 
-            for (String forbiddenText : forbiddenStrings) {
-                if (userInput.equals(forbiddenText)) {
+            for (String invalidText : invalidStrings) {
+                if (userInput.equals(invalidText)) {
                     System.out.println("Invalid text detected!");
                     notValid = true;
                     break;
