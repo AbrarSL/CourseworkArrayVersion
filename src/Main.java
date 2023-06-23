@@ -86,6 +86,7 @@ public class Main {
         displayHeader("Foodies Fave Food Center");
 
         final String commands = """
+                000 or H: View help menu.
                 100 or VFQ: View all queues.
                 101 or VEQ: View all empty queues.
                 102 or ACQ: Add a customer to a queue.
@@ -162,37 +163,26 @@ public class Main {
      * @return A validated String object.
      */
     private static String validatedInputPrompt(String prompt) {
-        // TODO: Refactor this method to use RegEx
-        // TODO: Add more validation rules
-        String[] invalidStrings = {"null", ","};
-        String userInput = "";
-        boolean notValid = true;
-
-        System.out.println("The following strings are considered invalid,");
-        for (String invalidText : invalidStrings) {
-            System.out.printf("\"%s\"", invalidText);
-        }
-
-        while (notValid) {
-            userInput = inputPrompt(prompt);
+        while (true) {
+            String userInput = inputPrompt(prompt).strip();
 
             if (userInput.length() == 0) {
-                System.out.println("Input can not be empty!");
+                System.out.println("Input cannot be empty!");
                 continue;
             }
 
-            notValid = false;
-
-            for (String invalidText : invalidStrings) {
-                if (userInput.equals(invalidText)) {
-                    System.out.println("Invalid text detected!");
-                    notValid = true;
-                    break;
-                }
+            if (userInput.contains(",")) {
+                System.out.println("Input cannot contain \",\"!");
+                continue;
             }
-        }
 
-        return userInput;
+            if (userInput.equals("null")) {
+                System.out.println("Input cannot be \"null\"!");
+                continue;
+            }
+
+            return userInput;
+        }
     }
 
     /**
