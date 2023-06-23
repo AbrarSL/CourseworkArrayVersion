@@ -351,6 +351,10 @@ public class Main {
             return;
         }
 
+        if (newStock <= 10) {
+            System.out.println("Warning: Stock is running low!");
+        }
+
         burgerStock = newStock;
         System.out.printf("Successfully served customer %s!\n", customerName);
     }
