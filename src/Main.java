@@ -69,9 +69,10 @@ public class Main {
     }
 
     private static void displayCommands() {
-        displayHeader("Food Queue Management");
+        displayHeader("Foodies Fave Food Center");
 
         final String commands = """
+                100 or VFQ: View all queues.
                 101 or VEQ: View all empty queues.
                 102 or ACQ: Add a customer to a queue.
                 103 or RCQ: Remove a customer from a specific location on a queue.
@@ -142,7 +143,19 @@ public class Main {
         queue[queue.length - 1] = null;
     }
 
-    private static String[] concatenateQueues(String[][] queues) {
+    private static String[] getLongestQueue(String[][] queues) {
+        String[] longest = queues[0];
+
+        for (String[] queue : queues) {
+            if (queue.length > longest.length) {
+                longest = queue;
+            }
+        }
+
+        return longest;
+    }
+
+    private static String[] flattenQueues(String[][] queues) {
         int totalLength = 0;
 
         for (String[] queue : queues) {
@@ -190,7 +203,7 @@ public class Main {
             swapped = false;
 
             for (int i = 0; i < queue.length - 1; i++) {
-                if (shouldStringSwap(queue[i], queue[i + 1])) {
+                if (stringShouldSwap(queue[i], queue[i + 1])) {
                     String temp = queue[i];
                     queue[i] = queue[i + 1];
                     queue[i + 1] = temp;
@@ -201,7 +214,7 @@ public class Main {
         }
     }
 
-    private static boolean shouldStringSwap(String firstString, String secondString) {
+    private static boolean stringShouldSwap(String firstString, String secondString) {
         firstString = firstString.toLowerCase();
         secondString = secondString.toLowerCase();
         String shortestString = firstString.length() > secondString.length() ? secondString : firstString;
@@ -224,7 +237,7 @@ public class Main {
 
     private static void viewAllQueues(String[][] queues) {
         final String titleText = "Cashier";
-        final int longestQueueLength = 5;
+        final int longestQueueLength = getLongestQueue(queues).length;
         final int headerLength = titleText.length() + 10;
         final int paddingLength = ((headerLength / queues.length) - 1) / 2;
 
@@ -312,7 +325,7 @@ public class Main {
     }
 
     private static void viewSortedCustomers() {
-        String[] allCustomers = concatenateQueues(cashiers);
+        String[] allCustomers = flattenQueues(cashiers);
         bubbleSortQueue(allCustomers);
 
         displayHeader("Customer Names (Sorted View)");
