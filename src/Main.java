@@ -2,25 +2,20 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Locale;
 import java.util.Scanner;
 
 public class Main {
+
+    private static final Scanner scanner = new Scanner(System.in);
+    private static final String[][] cashiers = new String[3][];
+    private static int burgerStock = 50;
+
     public static void main(String[] args) {
-        final Scanner scan = new Scanner(System.in);
-
-        String[][] cashiers = new String[3][];
-        cashiers[0] = new String[2];
-        cashiers[1] = new String[3];
-        cashiers[2] = new String[5];
-
-        int burgerStock = 50;
-
-        displayHeader("Food Queue Management");
+        initQueues();
         displayCommands();
 
         while (true) {
-            String command = inputPrompt(scan, "Enter a command (press \"H\" for help): ").strip().toUpperCase();
+            String command = inputPrompt("Enter a command (press \"H\" for help): ").strip().toUpperCase();
 
             if (command.equals("EXT") || command.equals("999")) {
                 System.out.println("Exiting program...");
@@ -35,31 +30,31 @@ public class Main {
                     viewAllQueues(cashiers);
                     break;
                 case "VEQ", "101":
-                    viewEmptyQueues(cashiers);
+                    viewEmptyQueues();
                     break;
                 case "ACQ", "102":
-                    addCustomerToQueue(scan, cashiers);
+                    addCustomerToQueue();
                     break;
                 case "RCQ", "103":
-                    removeCustomerFromQueue(scan, cashiers);
+                    removeCustomerFromQueue();
                     break;
                 case "PCQ", "104":
-                    burgerStock = removeServedCustomer(scan, cashiers, burgerStock);
+                    removeServedCustomer();
                     break;
                 case "VCS", "105":
-                    viewSortedCustomers(cashiers);
+                    viewSortedCustomers();
                     break;
                 case "SPD", "106":
-                    storeProgramData(cashiers, burgerStock);
+                    storeProgramData();
                     break;
                 case "LPD", "107":
-                    burgerStock = loadProgramData(cashiers, burgerStock);
+                   loadProgramData();
                     break;
                 case "STK", "108":
-                    viewBurgerStock(burgerStock);
+                    viewBurgerStock();
                     break;
                 case "AFS", "109":
-                    burgerStock = addToBurgerStock(scan, burgerStock);
+                    addToBurgerStock();
                     break;
                 default:
                     System.out.println("Unknown Command!");
@@ -67,7 +62,15 @@ public class Main {
         }
     }
 
+    private static void initQueues() {
+        cashiers[0] = new String[2];
+        cashiers[1] = new String[3];
+        cashiers[2] = new String[5];
+    }
+
     private static void displayCommands() {
+        displayHeader("Food Queue Management");
+
         final String commands = """
                 101 or VEQ: View all empty queues.
                 102 or ACQ: Add a customer to a queue.
@@ -93,9 +96,25 @@ public class Main {
         System.out.println("*".repeat(headerLength));
     }
 
-    private static String inputPrompt(Scanner scan, String prompt) {
+    private static String inputPrompt(String prompt) {
         System.out.print(prompt);
-        return scan.nextLine();
+        return scanner.nextLine();
+    }
+
+    private static int intInputPrompt(String prompt, int rangeStart, int rangeEnd) {
+        while (true) {
+            try {
+                int selectedNumber = Integer.parseInt(inputPrompt(prompt));
+
+                if (selectedNumber <= rangeEnd && selectedNumber >= rangeStart) {
+                    return selectedNumber;
+                }
+
+                System.out.println("Number out of range! Range is " + rangeStart + " to " + rangeEnd);
+            } catch (Exception error) {
+                System.out.println("Please enter an integer!");
+            }
+        }
     }
 
     private static boolean addToQueue(String[] queue, String customer) {
@@ -123,33 +142,17 @@ public class Main {
         queue[queue.length - 1] = null;
     }
 
-    private static int getInteger(Scanner scan, String prompt, int rangeStart, int rangeEnd) {
-        while (true) {
-            try {
-                int selectedNumber = Integer.parseInt(inputPrompt(scan, prompt));
-
-                if (selectedNumber <= rangeEnd && selectedNumber >= rangeStart) {
-                    return selectedNumber;
-                }
-
-                System.out.println("Number out of range! Range is " + rangeStart + " to " + rangeEnd);
-            } catch (Exception error) {
-                System.out.println("Please enter an integer!");
-            }
-        }
-    }
-
-    private static String[] concatenateQueues(String[][] cashiers) {
+    private static String[] concatenateQueues(String[][] queues) {
         int totalLength = 0;
 
-        for (String[] queue : cashiers) {
+        for (String[] queue : queues) {
             totalLength += queue.length;
         }
 
         String[] tempQueue = new String[totalLength];
         int queueIndex = 0;
 
-        for (String[] queue : cashiers) {
+        for (String[] queue : queues) {
             for (String name : queue) {
                 if (name != null) {
                     tempQueue[queueIndex] = name;
@@ -219,16 +222,16 @@ public class Main {
         return secondString == shortestString;
     }
 
-    private static void viewAllQueues(String[][] cashiers) {
+    private static void viewAllQueues(String[][] queues) {
         final String titleText = "Cashier";
         final int longestQueueLength = 5;
         final int headerLength = titleText.length() + 10;
-        final int paddingLength = ((headerLength / cashiers.length) - 1) / 2;
+        final int paddingLength = ((headerLength / queues.length) - 1) / 2;
 
         displayHeader(titleText);
 
         for (int i = 0; i < longestQueueLength; i++) {
-            for (String[] queue : cashiers) {
+            for (String[] queue : queues) {
                 System.out.print(" ".repeat(paddingLength));
 
                 if (queue.length <= i) {
@@ -249,11 +252,11 @@ public class Main {
         System.out.println("X - Not Occupied");
     }
 
-    private static void viewEmptyQueues(String[][] cashiers) {
+    private static void viewEmptyQueues() {
         String[][] tempQueues = new String[3][];
 
         for (int i = 0; i < cashiers.length; i++) {
-            if (cashiers[i][cashiers[i].length] == null) {
+            if (cashiers[i][cashiers[i].length - 1] == null) {
                 tempQueues[i] = cashiers[i];
             } else {
                 tempQueues[i] = new String[0];
@@ -263,9 +266,9 @@ public class Main {
         viewAllQueues(tempQueues);
     }
 
-    private static void addCustomerToQueue(Scanner scan, String[][] cashiers) {
-        int cashierNumber = getInteger(scan, "Enter cashier number: ", 0, cashiers.length - 1);
-        String customerName = inputPrompt(scan, "Enter name of customer: ");
+    private static void addCustomerToQueue() {
+        int cashierNumber = intInputPrompt("Enter cashier number: ", 0, cashiers.length - 1);
+        String customerName = inputPrompt("Enter name of customer: ");
 
         if (addToQueue(cashiers[cashierNumber], customerName)) {
             System.out.println("Successfully added customer to queue!");
@@ -275,9 +278,9 @@ public class Main {
         System.out.println("Couldn't add customer to queue! (Selected queue is full!)");
     }
 
-    private static void removeCustomerFromQueue(Scanner scan, String[][] cashiers) {
-        int cashierNumber = getInteger(scan, "Enter cashier number: ", 0, cashiers.length - 1);
-        int positionIndex = getInteger(scan, "Enter customer position: ", 0, cashiers[cashierNumber].length - 1);
+    private static void removeCustomerFromQueue() {
+        int cashierNumber = intInputPrompt("Enter cashier number: ", 0, cashiers.length - 1);
+        int positionIndex = intInputPrompt("Enter customer position: ", 0, cashiers[cashierNumber].length - 1);
         String customerName = popFromQueue(cashiers[cashierNumber], positionIndex);
 
         if (customerName == null) {
@@ -288,38 +291,38 @@ public class Main {
         System.out.printf("Successfully removed customer %s from queue!\n", customerName);
     }
 
-    private static int removeServedCustomer(Scanner scan, String[][] cashiers, int burgerStock) {
+    private static void removeServedCustomer() {
         int newStock = burgerStock - 5;
 
         if (newStock < 0) {
             System.out.println("Not enough items in stock! Cannot serve customer!");
-            return burgerStock;
+            return;
         }
 
-        int cashierNumber = getInteger(scan, "Enter cashier number: ", 0, cashiers.length - 1);
+        int cashierNumber = intInputPrompt("Enter cashier number: ", 0, cashiers.length - 1);
         String customerName = popFromQueue(cashiers[cashierNumber], 0);
 
         if (customerName == null) {
             System.out.println("No customer found at the cashier!");
-            return burgerStock;
+            return;
         }
 
+        burgerStock = newStock;
         System.out.printf("Successfully served customer %s!\n", customerName);
-        return newStock;
     }
 
-    private static void viewSortedCustomers(String[][] cashiers) {
+    private static void viewSortedCustomers() {
         String[] allCustomers = concatenateQueues(cashiers);
         bubbleSortQueue(allCustomers);
 
-        System.out.println("Customers in queue,");
+        displayHeader("Customer Names (Sorted View)");
 
         for (String customer : allCustomers) {
             System.out.println(customer);
         }
     }
 
-    private static void storeProgramData(String[][] cashiers, int burgerStock) {
+    private static void storeProgramData() {
         String fileName = "programState.csv";
 
         try {
@@ -343,7 +346,7 @@ public class Main {
         }
     }
 
-    private static int loadProgramData(String[][] cashiers, int burgerStock) {
+    private static void loadProgramData() {
         String fileName = "programState.csv";
         File file = new File(fileName);
 
@@ -352,58 +355,60 @@ public class Main {
 
             if (!fileReader.hasNextInt()) {
                 System.out.println("Stock data is not available! Save data may be corrupted!");
-                return burgerStock;
+                return;
             }
 
             int savedStock = fileReader.nextInt();
             fileReader.nextLine();
 
-            for (String[] cashier : cashiers) {
+            for (String[] queue : cashiers) {
                 if (!fileReader.hasNextLine()) {
                     System.out.println("Complete data is not available in save file!");
                     System.out.println("Data may have been partially loaded!");
-                    return savedStock;
+                    burgerStock = savedStock;
+                    return;
                 }
 
                 String[] dataLine = fileReader.nextLine().split(",");
 
-                if (dataLine.length < cashier.length) {
+                if (dataLine.length < queue.length) {
                     System.out.println("Complete data is not available in save file!");
                     System.out.println("Data may have been partially loaded!");
-                    return savedStock;
+                    burgerStock = savedStock;
+                    return;
                 }
 
-                for (int i = 0; i < cashier.length; i++) {
+                for (int i = 0; i < queue.length; i++) {
                     if (dataLine[i].equals("null")) {
-                        cashier[i] = null;
+                        queue[i] = null;
                     } else {
-                        cashier[i] = dataLine[i];
+                        queue[i] = dataLine[i];
                     }
                 }
             }
 
             System.out.println("Successfully loaded data from file: " + fileName);
-            return savedStock;
+            burgerStock = savedStock;
         } catch (FileNotFoundException fileError) {
             System.out.println("File " + fileName + " not found!");
             System.out.println("Cannot load data!");
-            return burgerStock;
         }
     }
 
-    private static void viewBurgerStock(int burgerStock) {
+    private static void viewBurgerStock() {
+        displayHeader("Stock Information");
         System.out.println("Available stock is: " + burgerStock);
     }
 
-    private static int addToBurgerStock(Scanner scan, int burgerStock) {
-        int newStock = burgerStock + getInteger(scan, "Enter the number of burgers to add: ", 0, 50);
+    private static void addToBurgerStock() {
+        int newStock = burgerStock + intInputPrompt("Enter the number of burgers to add: ", 0, 50);
 
         if (newStock > 50) {
             System.out.println("Stock capacity exceeded! Stock will not be updated!");
             System.out.println("Maximum capacity is 50 items!");
-            return burgerStock;
+            return;
         }
 
-        return newStock;
+        burgerStock = newStock;
     }
 }
