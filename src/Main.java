@@ -148,7 +148,7 @@ public class Main {
                 }
 
                 System.out.println("Number out of range! Range is " + rangeStart + " to " + rangeEnd);
-            } catch (Exception error) {
+            } catch (NumberFormatException exception) {
                 System.out.println("Please enter an integer!");
             }
         }
@@ -507,8 +507,7 @@ public class Main {
      * Data is stored as text in a CSV format.
      */
     private static void storeProgramData() {
-        try {
-            FileWriter fileWriter = new FileWriter(defaultFileName);
+        try (FileWriter fileWriter = new FileWriter((defaultFileName))) {
             fileWriter.write(burgerStock + "\n");
 
             for (String[] queue : cashiers) {
@@ -522,10 +521,8 @@ public class Main {
             System.out.println("Successfully stored data in file: " + defaultFileName);
 
             fileWriter.flush();
-            fileWriter.close();
         } catch (IOException error) {
             System.out.println("Could not create or read file! Data not stored!");
-            System.out.println("Message is: " + error.getMessage());
         }
     }
 
@@ -538,11 +535,10 @@ public class Main {
     private static void loadProgramData() {
         File file = new File(defaultFileName);
 
-        try {
-            Scanner fileReader = new Scanner(file);
-
+        try (Scanner fileReader = new Scanner(file)) {
             if (!fileReader.hasNextInt()) { // Ensure stock value is available
                 System.out.println("Stock data is not available! Save data may be corrupted!");
+                System.out.println("Data not loaded!");
                 return;
             }
 
@@ -551,7 +547,7 @@ public class Main {
 
             for (String[] queue : cashiers) {
                 if (!fileReader.hasNextLine()) { // Ensure all queues are available in file
-                    System.out.println("Complete data is not available in save file!");
+                    System.out.println("Save file does not contain enough data!");
                     System.out.println("Data may have been partially loaded!");
                     burgerStock = savedStock;
                     return;
@@ -560,7 +556,7 @@ public class Main {
                 String[] dataLine = fileReader.nextLine().split(",");
 
                 if (dataLine.length < queue.length) { // Ensure enough data is available for each queue
-                    System.out.println("Complete data is not available in save file!");
+                    System.out.println("Parsed data chunk is invalid!");
                     System.out.println("Data may have been partially loaded!");
                     burgerStock = savedStock;
                     return;
