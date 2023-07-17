@@ -6,13 +6,13 @@ import java.util.Scanner;
 
 public class Main {
 
-    private static final Scanner scanner = new Scanner(System.in);
-    private static final String[][] cashiers = new String[3][];
-    private static final int burgersPerCustomer = 5;
-    private static final int maxBurgerStock = 50;
-    private static final int lowBurgerStock = 10;
-    private static final String defaultFileName = "programState.txt";
-    private static int burgerStock = 50;
+    private static final Scanner INPUT = new Scanner(System.in);
+    private static final String[][] CASHIERS = new String[3][];
+    private static final int BURGERS_PER_CUSTOMER = 5;
+    private static final int MAX_BURGER_STOCK = 50;
+    private static final int LOW_BURGER_STOCK = 10;
+    private static final String DEFAULT_FILE_NAME = "programState.txt";
+    private static int burgerStock = 0;
 
     public static void main(String[] args) {
         initQueues(); // Queues must always be initialized before doing anything else
@@ -33,7 +33,7 @@ public class Main {
                     displayCommands();
                     break;
                 case "VFQ", "100":
-                    viewAllQueues(cashiers);
+                    viewAllQueues(CASHIERS);
                     break;
                 case "VEQ", "101":
                     viewEmptyQueues();
@@ -70,12 +70,12 @@ public class Main {
 
     /**
      * Initializes the child queues.
-     * This method mutates {@link Main#cashiers}
+     * This method mutates {@link Main#CASHIERS}
      */
     private static void initQueues() {
-        cashiers[0] = new String[2];
-        cashiers[1] = new String[3];
-        cashiers[2] = new String[5];
+        CASHIERS[0] = new String[2];
+        CASHIERS[1] = new String[3];
+        CASHIERS[2] = new String[5];
     }
 
     /**
@@ -126,7 +126,7 @@ public class Main {
      */
     private static String inputPrompt(String prompt) {
         System.out.print(prompt);
-        return scanner.nextLine();
+        return INPUT.nextLine();
     }
 
     /**
@@ -384,7 +384,7 @@ public class Main {
 
         fileReader.nextLine();
 
-        for (int i = 0; i < cashiers.length; i++) { // Ensure file contains enough data for all queues
+        for (int i = 0; i < CASHIERS.length; i++) { // Ensure file contains enough data for all queues
             if (!fileReader.hasNextLine()) {
                 System.out.println("File Validation Error: File does not contain all queues!");
                 fileReader.close();
@@ -393,7 +393,7 @@ public class Main {
 
             String[] dataLine = fileReader.nextLine().split(",");
 
-            if (dataLine.length < cashiers[i].length) {
+            if (dataLine.length < CASHIERS[i].length) {
                 System.out.println("File Validation Error: Queues in file do not contain enough data!");
                 fileReader.close();
                 return false;
@@ -447,11 +447,11 @@ public class Main {
     private static void viewEmptyQueues() {
         String[][] tempQueues = new String[3][];
 
-        for (int i = 0; i < cashiers.length; i++) { // Find all full queues
-            int lastIndex = cashiers[i].length - 1;
+        for (int i = 0; i < CASHIERS.length; i++) { // Find all full queues
+            int lastIndex = CASHIERS[i].length - 1;
 
-            if (cashiers[i][lastIndex] == null) { // Checks if tail of queue is free
-                tempQueues[i] = cashiers[i];
+            if (CASHIERS[i][lastIndex] == null) { // Checks if tail of queue is free
+                tempQueues[i] = CASHIERS[i];
             } else {
                 tempQueues[i] = new String[0]; // Dummy placeholder queue if the original is full
             }
@@ -463,13 +463,13 @@ public class Main {
     /**
      * Implements the ACQ/102 option for the program.
      * The user is prompted for the cashier number (0-indexed) and the name of the customer to be added.
-     * This method mutates {@link Main#cashiers}.
+     * This method mutates {@link Main#CASHIERS}.
      */
     private static void addCustomerToQueue() {
-        int cashierNumber = intInputPrompt("Enter cashier number: ", 0, cashiers.length - 1);
+        int cashierNumber = intInputPrompt("Enter cashier number: ", 0, CASHIERS.length - 1);
         String customerName = validatedInputPrompt("Enter name of customer: ");
 
-        if (!addToQueue(cashiers[cashierNumber], customerName)) { // Check if op failed
+        if (!addToQueue(CASHIERS[cashierNumber], customerName)) { // Check if op failed
             System.out.println("Couldn't add customer to queue! (Selected queue is full!)");
             return;
         }
@@ -480,12 +480,12 @@ public class Main {
     /**
      * Implements the RCQ/103 option for the program.
      * The user is prompted for the cashier number (0-indexed) and the position (0-indexed) of the customer to remove.
-     * This method mutates {@link Main#cashiers}.
+     * This method mutates {@link Main#CASHIERS}.
      */
     private static void removeCustomerFromQueue() {
-        int cashierNumber = intInputPrompt("Enter cashier number: ", 0, cashiers.length - 1);
-        int positionIndex = intInputPrompt("Enter customer position: ", 0, cashiers[cashierNumber].length - 1);
-        String customerName = popFromQueue(cashiers[cashierNumber], positionIndex);
+        int cashierNumber = intInputPrompt("Enter cashier number: ", 0, CASHIERS.length - 1);
+        int positionIndex = intInputPrompt("Enter customer position: ", 0, CASHIERS[cashierNumber].length - 1);
+        String customerName = popFromQueue(CASHIERS[cashierNumber], positionIndex);
 
         if (customerName == null) { // Check if op failed
             System.out.println("No customer found in that position!");
@@ -498,26 +498,26 @@ public class Main {
     /**
      * Implements the PCQ/104 option for the program.
      * The user is prompted for the cashier number (0-indexed) to serve customers from.
-     * Served customers are removed and {@link Main#burgersPerCustomer} is subtracted from {@link Main#burgerStock}
+     * Served customers are removed and {@link Main#BURGERS_PER_CUSTOMER} is subtracted from {@link Main#burgerStock}
      * only if doing so would not set {@link Main#burgerStock} to a negative value.
      */
     private static void removeServedCustomer() {
-        int newStock = burgerStock - burgersPerCustomer;
+        int newStock = burgerStock - BURGERS_PER_CUSTOMER;
 
         if (newStock < 0) { // Ensure stock will not be negative
             System.out.println("Not enough items in stock! Cannot serve customer!");
             return;
         }
 
-        int cashierNumber = intInputPrompt("Enter cashier number: ", 0, cashiers.length - 1);
-        String customerName = popFromQueue(cashiers[cashierNumber], 0);
+        int cashierNumber = intInputPrompt("Enter cashier number: ", 0, CASHIERS.length - 1);
+        String customerName = popFromQueue(CASHIERS[cashierNumber], 0);
 
         if (customerName == null) { // Ensure that customer is present in queue
             System.out.println("No customer found at the cashier!");
             return;
         }
 
-        if (newStock <= lowBurgerStock) { // Low stock warning
+        if (newStock <= LOW_BURGER_STOCK) { // Low stock warning
             System.out.println("Warning: Stock is running low!");
         }
 
@@ -527,10 +527,10 @@ public class Main {
 
     /**
      * Implements the VCS/105 option for the program.
-     * All the customer names stored in {@link Main#cashiers} are displayed to the user in alphabetical order.
+     * All the customer names stored in {@link Main#CASHIERS} are displayed to the user in alphabetical order.
      */
     private static void viewSortedCustomers() {
-        String[] allCustomers = flattenQueues(cashiers);
+        String[] allCustomers = flattenQueues(CASHIERS);
         bubbleSortQueue(allCustomers);
 
         displayHeader("Customer Names (Sorted View)");
@@ -542,15 +542,15 @@ public class Main {
 
     /**
      * Implements the SPD/106 option for the program.
-     * This method stores data from {@link Main#burgerStock} and {@link Main#cashiers}
-     * into the file {@link Main#defaultFileName} in the current directory.
+     * This method stores data from {@link Main#burgerStock} and {@link Main#CASHIERS}
+     * into the file {@link Main#DEFAULT_FILE_NAME} in the current directory.
      * Data is stored as text in a CSV format.
      */
     private static void storeProgramData() {
-        try (FileWriter fileWriter = new FileWriter((defaultFileName))) {
+        try (FileWriter fileWriter = new FileWriter((DEFAULT_FILE_NAME))) {
             fileWriter.write(burgerStock + "\n");
 
-            for (String[] queue : cashiers) {
+            for (String[] queue : CASHIERS) {
                 for (String name : queue) {
                     fileWriter.write(name + ",");
                 }
@@ -558,24 +558,24 @@ public class Main {
                 fileWriter.write("\n");
             }
 
-            System.out.printf("Successfully stored data in file \"%s\"\n", defaultFileName);
+            System.out.printf("Successfully stored data in file \"%s\"\n", DEFAULT_FILE_NAME);
 
             fileWriter.flush();
         } catch (IOException error) {
-            System.out.printf("File \"%s\" could not be created or read!\n", defaultFileName);
+            System.out.printf("File \"%s\" could not be created or read!\n", DEFAULT_FILE_NAME);
             System.out.println("Data not stored!");
         }
     }
 
     /**
      * Implements the LPD/107 option for the program.
-     * This method loads data from the file {@link Main#defaultFileName} in the current directory into {@link Main#burgerStock} and
-     * {@link Main#cashiers}.
+     * This method loads data from the file {@link Main#DEFAULT_FILE_NAME} in the current directory into {@link Main#burgerStock} and
+     * {@link Main#CASHIERS}.
      * The file is validated before loading.
      * The file must contain text in a CSV format in the right order.
      */
     private static void loadProgramData() {
-        File saveFile = new File(defaultFileName);
+        File saveFile = new File(DEFAULT_FILE_NAME);
 
         try (Scanner fileReader = new Scanner(saveFile)) {
             if (!validateSaveFile(saveFile)) {
@@ -586,7 +586,7 @@ public class Main {
             int savedStock = fileReader.nextInt();
             fileReader.nextLine();
 
-            for (String[] queue : cashiers) {
+            for (String[] queue : CASHIERS) {
                 String[] dataLine = fileReader.nextLine().split(",");
 
                 for (int i = 0; i < queue.length; i++) { // Parse data and store in program memory
@@ -618,14 +618,14 @@ public class Main {
     /**
      * Implements AFS/109 option for the program.
      * This method prompts the user for a number and adds that amount to the stock ({@link Main#burgerStock}).
-     * This method will only mutate {@link Main#burgerStock} if it will not exceed {@link Main#maxBurgerStock}.
+     * This method will only mutate {@link Main#burgerStock} if it will not exceed {@link Main#MAX_BURGER_STOCK}.
      */
     private static void addToBurgerStock() {
-        int newStock = burgerStock + intInputPrompt("Enter the number of burgers to add: ", 0, maxBurgerStock);
+        int newStock = burgerStock + intInputPrompt("Enter the number of burgers to add: ", 0, MAX_BURGER_STOCK);
 
-        if (newStock > maxBurgerStock) {
+        if (newStock > MAX_BURGER_STOCK) {
             System.out.println("Stock capacity exceeded! Stock will not be updated!");
-            System.out.printf("Maximum capacity is %s items!\n", maxBurgerStock);
+            System.out.printf("Maximum capacity is %s items!\n", MAX_BURGER_STOCK);
             return;
         }
 
